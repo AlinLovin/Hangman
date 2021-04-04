@@ -39,6 +39,7 @@ window.onload = function() {
 				space = space.substring(0, i) + idButton + space.substring(i + 1);
 			}
 			console.log(space);
+			document.getElementById("guessWord").innerHTML = space;
 		}
 	}
 
