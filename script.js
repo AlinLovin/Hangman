@@ -16,49 +16,45 @@ window.onload = function() {
 		}
 	}
 
-	
 	var lives = 10;
+	document.getElementById("lives").innerHTML = "You have " + lives + " lives";
 	buttons();
-	var words = ['cat', 'shark', 'spider', 'computer', 'javascript',
-	'plug', 'camera', 'phone', 'programmer'];
 
-	var word = words[Math.floor(Math.random() * words.length)]
-	console.log(word);
-
-	var space = "";
-	for (let i = 0; i < word.length; ++i) {
-		space += "_";
-	}
-	document.getElementById("guessWord").innerHTML = space;
-	
-
-/*
-	selectWord = function() {
-		var lives = 10;
-		buttons();
+	var selectRandomWord = function() {
 		var words = ['cat', 'shark', 'spider', 'computer', 'javascript',
 		'plug', 'camera', 'phone', 'programmer'];
 
 		var word = words[Math.floor(Math.random() * words.length)]
 		console.log(word);
-
-		var space = "";
-		for (let i = 0; i < word.length; ++i) {
-			space += "_";
-		}
+		return word;
 	}
-	selectWord();*/
+
+	var space = "";
+	var selectedWord = selectRandomWord();
+
+	for (let i = 0; i < selectedWord.length; ++i) {
+		space += "_";
+	}
+	//document.getElementById("guessWord").innerHTML = space;
 
 	checkLetter = function(idButton) { 
 		var ok = 0, win = 1;
-		for (let i = 0; i < word.length; ++i) {
-			if (word[i] == idButton) {
+		var wordStatus = "";
+		for (let i = 0; i < selectedWord.length; ++i) {
+			if (selectedWord[i] == idButton) {
 				ok = 1;
 				space = space.substring(0, i) + idButton + space.substring(i + 1);
 			}
 			console.log(space);
-			document.getElementById("guessWord").innerHTML = space;
+
 		}
+
+		for (let k = 0; k < space.length; ++k) {
+			wordStatus += space[k] + " ";
+		}
+
+		document.getElementById("guessWord").innerHTML = wordStatus;
+
 		for (let j = 0; j < space.length; ++j) {
 			if (space[j] == '_') {
 				win = 0;
@@ -74,7 +70,9 @@ window.onload = function() {
 
 	comments = function() {
 		--lives;
-		if (lives > 0) {
+		var drawMe = lives;
+		drawArray[drawMe]();
+		if (lives >= 0) {
 			document.getElementById("lives").innerHTML = "You have " + lives + " lives";
 		}
 		if (lives < 1) {
@@ -83,5 +81,72 @@ window.onload = function() {
 		console.log(lives);
 	} 
 
+	canvas =  function(){
+
+	    myStickman = document.getElementById("myCanvas");
+	    context = myStickman.getContext('2d');
+	    context.beginPath();
+	    context.strokeStyle = "#fff";
+	    context.lineWidth = 2;
+	};
+
+	draw = function($pathFromx, $pathFromy, $pathTox, $pathToy) {
+    
+    	myStickman = document.getElementById("myCanvas");
+		context = myStickman.getContext('2d');
+	    context.moveTo($pathFromx, $pathFromy);
+	    context.lineTo($pathTox, $pathToy);
+	    context.stroke(); 
+	}
+
+	head = function() {
+		myStickman = document.getElementById("myCanvas");
+		context = myStickman.getContext('2d');
+		context.beginPath();
+		context.arc(60, 25, 10, 0, Math.PI*2, true);
+		context.stroke();
+    }
+
+	frame1 = function() {
+	    draw (0, 150, 150, 150);
+	};
+	   
+	frame2 = function() {
+	    draw (10, 0, 10, 600);
+	};
+	  
+	frame3 = function() {
+	    draw (0, 5, 70, 5);
+    };
+	  
+	frame4 = function() {
+	    draw (60, 5, 60, 15);
+	};
+	  
+	torso = function() {
+	   draw (60, 36, 60, 70);
+	};
+	  
+	rightArm = function() {
+	    draw (60, 46, 100, 50);
+	};
+  
+	leftArm = function() {
+	    draw (60, 46, 20, 50);
+	};
+	  
+	rightLeg = function() {
+	    draw (60, 70, 100, 100);
+	};
+	  
+	leftLeg = function() {
+	    draw (60, 70, 20, 100);
+	};
+
+	drawArray = [rightLeg, leftLeg, rightArm, leftArm,  torso,  head, frame4, frame3, frame2, frame1];
 }
+
+function reloadPage() {
+		window.location.reload();
+	}
 
