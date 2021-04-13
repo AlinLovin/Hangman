@@ -1,6 +1,10 @@
 window.onload = function() {
+	var lives = 10;
+	var underscores = "";
+	document.getElementById("lives").innerHTML = "You have " + lives + " lives";
 
-	var buttons = function() {
+	// I display the buttons and give them ID as a letter.
+	var generateButtons = function() {
 		var alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
 		'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
 		'w', 'x', 'y', 'z'];
@@ -12,96 +16,108 @@ window.onload = function() {
 	
 			btn.addEventListener ("click", function() {
 				checkLetter(this.id);
+				this.id = "";
 			});
 		}
 	}
 
-	var lives = 10;
-	document.getElementById("lives").innerHTML = "You have " + lives + " lives";
-	buttons();
+	generateButtons();
 
+	// I set the word random.
 	var selectRandomWord = function() {
 		var words = ['cat', 'shark', 'spider', 'computer', 'javascript',
 		'plug', 'camera', 'phone', 'programmer'];
 
 		var word = words[Math.floor(Math.random() * words.length)]
-		console.log(word);
 		return word;
 	}
+	var randomWord = selectRandomWord();
 
-	var space = "";
-	var selectedWord = selectRandomWord();
-
-	for (let i = 0; i < selectedWord.length; ++i) {
-		space += "_";
+	// Replace each letter of the word random with the '_' character.
+	var underscoresWord = function() {
+		var wordLines = "";
+		for (let i = 0; i < randomWord.length; ++i) {
+			wordLines += "_";
+		}
+		return wordLines;
 	}
-	//document.getElementById("guessWord").innerHTML = space;
 
-	checkLetter = function(idButton) { 
-		var ok = 0, win = 1;
+	// I add the ' ' character between each '_' character and display the random word status.
+	displayWordStatus = function() {
 		var wordStatus = "";
-		for (let i = 0; i < selectedWord.length; ++i) {
-			if (selectedWord[i] == idButton) {
-				ok = 1;
-				space = space.substring(0, i) + idButton + space.substring(i + 1);
-			}
-			console.log(space);
-
+		var wordLines = "";
+		for (let i = 0; i < randomWord.length; ++i) {
+			wordLines += "_";
 		}
 
-		for (let k = 0; k < space.length; ++k) {
-			wordStatus += space[k] + " ";
+		for (let k = 0; k < wordLines.length; ++k) {
+			wordStatus += wordLines[k] + " ";
 		}
-
 		document.getElementById("guessWord").innerHTML = wordStatus;
+	}
+	displayWordStatus();
 
-		for (let j = 0; j < space.length; ++j) {
-			if (space[j] == '_') {
-				win = 0;
+	// I check if the ID of the pressed button is found in the random word and and display the random word status.
+	checkLetter = function(idButton) {
+		var isEqual = 0, win = 1;
+		var wordStatus = ""; 
+		if (underscores == "") {
+			underscores = underscoresWord();
+		}
+		
+		if (idButton != "") {
+			for (let i = 0; i < randomWord.length; ++i) {
+				if (randomWord[i] == idButton) {
+					isEqual = 1;
+					underscores = underscores.substring(0, i) + idButton + underscores.substring(i + 1);
+				}
 			}
-		}
-		if (win == 1) {
-			document.getElementById("final").innerHTML = "You win!";
-		}
-		if (ok == 0 && win == 0) {
-			comments();
+
+			for (let k = 0; k < underscores.length; ++k) {
+				wordStatus += underscores[k] + " ";
+			}
+
+			document.getElementById("guessWord").innerHTML = wordStatus;
+
+			for (let j = 0; j < underscores.length; ++j) {
+				if (underscores[j] == '_') {
+					win = 0;
+				}
+			}
+			if (win == 1) {
+				document.getElementById("final").innerHTML = "You win!";
+			}
+			if (isEqual == 0 && win == 0) {
+				statusGame();
+			}
 		}
 	}
 
-	comments = function() {
+	// I call each drawing function in the drawArray according to the number of lives and display the game status. 
+	statusGame = function() {
 		--lives;
-		var drawMe = lives;
-		drawArray[drawMe]();
+		var drawHangman = lives;
+		drawArray[drawHangman]();
 		if (lives >= 0) {
 			document.getElementById("lives").innerHTML = "You have " + lives + " lives";
 		}
 		if (lives < 1) {
 			document.getElementById("final").innerHTML = "GAME OVER";	
 		}
-		console.log(lives);
-	} 
+	}
 
-	canvas =  function(){
-
-	    myStickman = document.getElementById("myCanvas");
-	    context = myStickman.getContext('2d');
-	    context.beginPath();
-	    context.strokeStyle = "#fff";
-	    context.lineWidth = 2;
-	};
-
-	draw = function($pathFromx, $pathFromy, $pathTox, $pathToy) {
-    
-    	myStickman = document.getElementById("myCanvas");
-		context = myStickman.getContext('2d');
-	    context.moveTo($pathFromx, $pathFromy);
-	    context.lineTo($pathTox, $pathToy);
+	// I draw the character according to the parameters in each function in the drawArray.
+	draw = function(x, y, width, height) {
+    	var hangman = document.getElementById("hangmanCanvas");
+		var context = hangman.getContext('2d');
+	    context.moveTo(x, y);
+	    context.lineTo(width, height);
 	    context.stroke(); 
 	}
 
 	head = function() {
-		myStickman = document.getElementById("myCanvas");
-		context = myStickman.getContext('2d');
+		var hangman = document.getElementById("hangmanCanvas");
+        var context = hangman.getContext('2d');
 		context.beginPath();
 		context.arc(60, 25, 10, 0, Math.PI*2, true);
 		context.stroke();
@@ -112,7 +128,7 @@ window.onload = function() {
 	};
 	   
 	frame2 = function() {
-	    draw (10, 0, 10, 600);
+	    draw (10, 0, 10, 150);
 	};
 	  
 	frame3 = function() {
@@ -143,10 +159,10 @@ window.onload = function() {
 	    draw (60, 70, 20, 100);
 	};
 
-	drawArray = [rightLeg, leftLeg, rightArm, leftArm,  torso,  head, frame4, frame3, frame2, frame1];
+	drawArray = [rightLeg, leftLeg, leftArm, rightArm,  torso,  head, frame4, frame3, frame2, frame1];
 }
 
 function reloadPage() {
-		window.location.reload();
-	}
+	window.location.reload();
+}
 
