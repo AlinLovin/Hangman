@@ -20,7 +20,6 @@ window.onload = function() {
 			});
 		}
 	}
-
 	generateButtons();
 
 	// I set the word random.
